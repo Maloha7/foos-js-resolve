@@ -2,6 +2,7 @@ import { IllegalStateError } from '@event-driven-io/emmett';
 import { hashPassword } from '../common/password';
 import type { Actor } from '../common/actor';
 import type {
+  PlayerAvatarChanged,
   PlayerCreated,
   PlayerDeleted,
   PlayerEmailChanged,
@@ -133,4 +134,13 @@ export const decideChangeEmail = (
   if (!input.newEmail) throw new IllegalStateError('newEmail is required');
   if (!EMAIL_RE.test(input.newEmail)) throw new IllegalStateError('email is invalid');
   return { type: 'PLAYER_EMAIL_CHANGED', data: { newEmail: input.newEmail } };
+};
+
+export const decideChangeAvatar = (
+  state: PlayerState,
+  input: { avatar: string },
+): PlayerAvatarChanged => {
+  if (!state.createdAt) throw new IllegalStateError('Player does not exist');
+  if (!input.avatar) throw new IllegalStateError('avatar is required');
+  return { type: 'PLAYER_AVATAR_CHANGED', data: { avatar: input.avatar } };
 };

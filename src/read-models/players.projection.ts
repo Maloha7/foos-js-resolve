@@ -24,6 +24,7 @@ export const playersProjection = pongoProjection<PlayerEvent>({
     'PLAYER_LOST_MATCH',
     'PLAYER_SET_DEFAULT_LEAGUE',
     'PLAYER_EMAIL_CHANGED',
+    'PLAYER_AVATAR_CHANGED',
   ],
   handle: async (events, { pongo }) => {
     const players = pongo.db().collection<PlayerDoc>('players');
@@ -69,6 +70,12 @@ export const playersProjection = pongoProjection<PlayerEvent>({
           await players.updateOne(
             { _id: id },
             { $set: { email: event.data.newEmail } },
+          );
+          break;
+        case 'PLAYER_AVATAR_CHANGED':
+          await players.updateOne(
+            { _id: id },
+            { $set: { avatar: event.data.avatar } },
           );
           break;
       }

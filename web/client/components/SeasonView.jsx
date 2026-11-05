@@ -81,6 +81,7 @@ const SeasonView = ({ id, leagueId }) => {
     aggregateIds: [id],
   });
   const { data: players, playersStatus } = useSelector(playersSelector);
+  const rankedPlayerIds = players?.ranks?.map((rank) => rank.id) ?? [];
 
   useEffect(() => {
     connect();
@@ -236,6 +237,7 @@ const SeasonView = ({ id, leagueId }) => {
           <Modal.Body>
             <MatchRegistration
               season={id}
+              rankedPlayerIds={rankedPlayerIds}
               onCancel={() => setShowCreateMatch(false)}
               onCreated={() => setShowCreateMatch(false)}
             ></MatchRegistration>
@@ -256,6 +258,7 @@ const SeasonView = ({ id, leagueId }) => {
             <MatchCorrection
               season={id}
               match={correctingMatch}
+              rankedPlayerIds={rankedPlayerIds}
               onCancel={() => setCorrectingMatch(null)}
               onDone={() => setCorrectingMatch(null)}
             />

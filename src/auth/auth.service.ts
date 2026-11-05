@@ -78,6 +78,11 @@ export class AuthService {
   }): Promise<string> {
     const existing = await this.players.byEmail(profile.user.email);
     if (existing) {
+      if (profile.user.image_192 && profile.user.image_192 !== existing.avatar) {
+        await this.playerCommands.changeAvatar(existing.id!, {
+          avatar: profile.user.image_192,
+        });
+      }
       return this.sign({
         id: existing.id!,
         name: existing.name,
@@ -92,6 +97,7 @@ export class AuthService {
     await this.playerCommands.createPlayer(id, {
       name: profile.user.name,
       email: profile.user.email,
+      avatar: profile.user.image_192,
     });
     return this.sign({
       id,

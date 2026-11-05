@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid'
 import { useCommand } from '@resolve-js/react-hooks'
 import { Button, Form } from "react-bootstrap";
 
-const DoubleMatchCreate = ({ season, onDone, onCancel }) => {
+const DoubleMatchCreate = ({ season, rankedPlayerIds, onDone, onCancel }) => {
   const [winner1, setWinner1] = useState()
   const [winner2, setWinner2] = useState()
   const [loser1, setLoser1] = useState()
@@ -33,12 +33,12 @@ const DoubleMatchCreate = ({ season, onDone, onCancel }) => {
 
   return (<Form>
     <Form.Group controlId="formWinner">
-      <PlayerSelect onSelected={(p) => setWinner1(p)} unselectedText="Winner 1" variant="success"></PlayerSelect>
-      <PlayerSelect onSelected={(p) => setWinner2(p)} unselectedText="Winner 2" variant="success"></PlayerSelect>
+      <PlayerSelect rankedPlayerIds={rankedPlayerIds} onSelected={(p) => setWinner1(p)} unselectedText="Winner 1" variant="success"></PlayerSelect>
+      <PlayerSelect rankedPlayerIds={rankedPlayerIds} onSelected={(p) => setWinner2(p)} unselectedText="Winner 2" variant="success"></PlayerSelect>
     </Form.Group>
     <Form.Group controlId="formLoser">
-      <PlayerSelect onSelected={(p) => setLoser1(p)} unselectedText="Loser 1" variant="warning"></PlayerSelect>
-      <PlayerSelect onSelected={(p) => setLoser2(p)} unselectedText="Loser 2" variant="warning"></PlayerSelect>
+      <PlayerSelect rankedPlayerIds={rankedPlayerIds} onSelected={(p) => setLoser1(p)} unselectedText="Loser 1" variant="warning"></PlayerSelect>
+      <PlayerSelect rankedPlayerIds={rankedPlayerIds} onSelected={(p) => setLoser2(p)} unselectedText="Loser 2" variant="warning"></PlayerSelect>
     </Form.Group>
     <Form.Group className="mt-4">
       <Button onClick={registerMatch} className="me-2" variant="primary" style={{"width": "10ch"}}>Add</Button> 

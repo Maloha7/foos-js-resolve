@@ -95,3 +95,62 @@ test('registering a match updates the live scoreboard over WebSocket', async ({
   await expect(page.getByText(alice).first()).toBeVisible({ timeout: 20_000 });
   await expect(page.getByText(bob).first()).toBeVisible({ timeout: 20_000 });
 });
+
+test('new match picker shows scoreboard players first and finds others via search', async ({
+  page,
+}) => {
+  const ranked = randomUUID();
+  const opponent = randomUUID();
+  const newcomer = randomUUID();
+  const rankedName = `Ranked ${stamp()}`;
+  const opponentName = `Opponent ${stamp()}`;
+  const newcomerName = `Newcomer ${stamp()}`;
+  for (const [id, name] of [
+    [ranked, rankedName],
+    [opponent, opponentName],
+    [newcomer, newcomerName],
+  ]) {
+    await page.request.post(`/api/players/${id}`, {
+      data: { name, email: uniqueEmail() },
+    });
+  }
+
+  await registerViaUi(page);
+  const leagueName = `E2E Picker ${stamp()}`;
+  await createLeagueViaUi(page, leagueName);
+  await page.getByRole('link', { name: leagueName }).click();
+  await expect(page.getByText('Scoreboard')).toBeVisible({ timeout: 20_000 });
+
+  const leagues: Array<{ name: string; currentSeason?: string }> = await (
+    await page.request.get('/api/leagues')
+  ).json();
+  const season = leagues.find((l) => l.name === leagueName)?.currentSeason;
+  expect(season).toBeTruthy();
+
+  await page.waitForTimeout(1500);
+  const seeded = await page.request.post(`/api/seasons/${season}/matches`, {
+    data: { matchid: randomUUID(), winners: [ranked], losers: [opponent] },
+  });
+  expect(seeded.ok()).toBeTruthy();
+  await expect(page.getByText(rankedName).first()).toBeVisible();
+
+  await page.getByRole('button', { name: 'New Match' }).click();
+  await page.getByRole('button', { name: 'Single', exact: true }).click();
+  const modal = page.locator('.modal-content');
+
+  await modal.getByText('Winner', { exact: true }).click();
+  await expect(modal.getByRole('button', { name: rankedName })).toBeVisible();
+  await expect(modal.getByRole('button', { name: newcomerName })).toHaveCount(0);
+
+  await modal.getByRole('button', { name: 'Show all players' }).click();
+  await modal.getByRole('searchbox', { name: 'Search players' }).fill(newcomerName);
+  await expect(modal.getByRole('button', { name: rankedName })).toHaveCount(0);
+  await modal.getByRole('button', { name: newcomerName }).click();
+
+  await modal.getByText('Loser', { exact: true }).click();
+  await modal.getByRole('button', { name: rankedName }).click();
+
+  await modal.getByRole('button', { name: 'Add' }).click();
+  await expect(modal).toBeHidden();
+  await expect(page.getByText(newcomerName).first()).toBeVisible();
+});

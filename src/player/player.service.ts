@@ -3,6 +3,7 @@ import { CommandHandler, type EventStore } from '@event-driven-io/emmett';
 import { EVENT_STORE } from '../event-store/event-store.constants';
 import type { Actor } from '../common/actor';
 import {
+  decideChangeAvatar,
   decideChangeEmail,
   decideCreatePlayer,
   decideDeletePlayer,
@@ -83,6 +84,12 @@ export class PlayerService {
   changeEmail(playerId: string, input: { newEmail: string }) {
     return this.handle(this.store, streamId(playerId), (state) =>
       decideChangeEmail(state, input),
+    );
+  }
+
+  changeAvatar(playerId: string, input: { avatar: string }) {
+    return this.handle(this.store, streamId(playerId), (state) =>
+      decideChangeAvatar(state, input),
     );
   }
 }

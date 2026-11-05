@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid'
 import { useCommand } from '@resolve-js/react-hooks'
 import { Button, Form } from "react-bootstrap";
 
-const SingleMatchCreate = ({ season, onDone, onCancel }) => {
+const SingleMatchCreate = ({ season, rankedPlayerIds, onDone, onCancel }) => {
   const [winner, setWinner] = useState()
   const [loser, setLoser] = useState()
 
@@ -31,10 +31,10 @@ const SingleMatchCreate = ({ season, onDone, onCancel }) => {
 
   return (<Form>
     <Form.Group controlId="formWinner">
-      <PlayerSelect onSelected={(p) => setWinner(p)} unselectedText="Winner" variant="success"></PlayerSelect>
+      <PlayerSelect rankedPlayerIds={rankedPlayerIds} onSelected={(p) => setWinner(p)} unselectedText="Winner" variant="success"></PlayerSelect>
     </Form.Group>
     <Form.Group controlId="formLoser">
-      <PlayerSelect onSelected={(p) => setLoser(p)} unselectedText="Loser" variant="warning"></PlayerSelect>
+      <PlayerSelect rankedPlayerIds={rankedPlayerIds} onSelected={(p) => setLoser(p)} unselectedText="Loser" variant="warning"></PlayerSelect>
     </Form.Group>
     <Form.Group className="mt-4">
       <Button onClick={registerMatch} className="me-2" variant="primary" style={{"width": "10ch"}}>Add</Button> 

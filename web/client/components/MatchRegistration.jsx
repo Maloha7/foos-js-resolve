@@ -3,7 +3,7 @@ import { Button, Form, FormGroup } from "react-bootstrap";
 import { DoubleMatchCreate } from "./DoubleMatchCreate";
 import { SingleMatchCreate } from "./SingleMatchCreate";
 
-const MatchRegistration = ({season, onCancel, onCreated}) => {
+const MatchRegistration = ({season, rankedPlayerIds, onCancel, onCreated}) => {
   const [registration, setRegistration] = useState()
 
   const onDone = function () {
@@ -17,9 +17,9 @@ const MatchRegistration = ({season, onCancel, onCreated}) => {
       {(() => {
         switch (registration) {
           case "single":
-            return <SingleMatchCreate season={season} onDone={onDone} onCancel={onCancel}></SingleMatchCreate>
+            return <SingleMatchCreate season={season} rankedPlayerIds={rankedPlayerIds} onDone={onDone} onCancel={onCancel}></SingleMatchCreate>
           case "double":
-            return <DoubleMatchCreate season={season} onDone={onDone} onCancel={onCancel}></DoubleMatchCreate>
+            return <DoubleMatchCreate season={season} rankedPlayerIds={rankedPlayerIds} onDone={onDone} onCancel={onCancel}></DoubleMatchCreate>
           default:
             return <FormGroup>
               <Button onClick={() => setRegistration("single")} className="me-2" size="lg" style={{"width": "14ch"}}>Single</Button>
