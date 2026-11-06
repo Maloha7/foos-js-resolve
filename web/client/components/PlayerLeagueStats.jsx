@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { PlayerName } from './PlayerName';
+import { SeasonWinsBadge } from './SeasonWinsBadge';
 import { fetchPlayerLeagueStats } from '../api/endpoints';
 
 // Career card surfaces only the worst offenders; the API returns all of them.
@@ -13,6 +14,16 @@ const Stat = ({ label, value }) => (
   <div className="text-center px-2">
     <div className="display-6">{value}</div>
     <small className="text-muted">{label}</small>
+  </div>
+);
+
+const SeasonsWonStat = ({ seasonsWon }) => (
+  <div className="text-center px-2">
+    <div className="display-6 d-flex align-items-center justify-content-center gap-2">
+      <SeasonWinsBadge seasonsWon={seasonsWon} />
+      {seasonsWon}
+    </div>
+    <small className="text-muted">Seasons won</small>
   </div>
 );
 
@@ -85,7 +96,7 @@ const PlayerLeagueStats = ({ leagueId, playerId }) => {
       <div className="d-flex justify-content-around bg-light bg-opacity-10 rounded p-2 mb-3">
         <Stat label="High score" value={stats.highScore ?? '—'} />
         <Stat label="Low score" value={stats.lowScore ?? '—'} />
-        <Stat label="Seasons won" value={stats.seasonsWon ?? 0} />
+        <SeasonsWonStat seasonsWon={stats.seasonsWon ?? 0} />
       </div>
 
       {(stats.bestTeammate || stats.worstTeammate) && (
