@@ -85,6 +85,7 @@ const PlayerLeagueStats = ({ leagueId, playerId }) => {
       <div className="d-flex justify-content-around bg-light bg-opacity-10 rounded p-2 mb-3">
         <Stat label="High score" value={stats.highScore ?? '—'} />
         <Stat label="Low score" value={stats.lowScore ?? '—'} />
+        <Stat label="Seasons won" value={stats.seasonsWon ?? 0} />
       </div>
 
       {(stats.bestTeammate || stats.worstTeammate) && (

@@ -7,6 +7,7 @@ import {
   RANKING_ENV,
   rankingOptionsFromEnv,
   withSeasonFinalRank,
+  withSeasonWinner,
   type StatsAccumulator,
 } from './league-stats';
 
@@ -227,5 +228,35 @@ describe('finalizeStats — high/low score', () => {
   it('leaves scores null when the player never appeared in any season', () => {
     const stats = finalizeStats('L', 'me', initialStatsAccumulator());
     expect(stats).toEqual(emptyPlayerLeagueStats('L', 'me'));
+  });
+});
+
+describe('withSeasonWinner', () => {
+  it('counts a season the player won', () => {
+    const acc = withSeasonWinner(initialStatsAccumulator(), 'me', 'me');
+    expect(acc.seasonsWon).toBe(1);
+  });
+
+  it('ignores a season someone else won', () => {
+    const acc = withSeasonWinner(initialStatsAccumulator(), 'me', 'a');
+    expect(acc).toEqual(initialStatsAccumulator());
+  });
+
+  it('ignores a season without a winner', () => {
+    const acc = withSeasonWinner(initialStatsAccumulator(), 'me', undefined);
+    expect(acc).toEqual(initialStatsAccumulator());
+  });
+
+  it('reports the total through finalizeStats', () => {
+    let acc = foldMatches('me', [{ winners: ['me'], losers: ['a'] }]);
+    acc = withSeasonWinner(acc, 'me', 'me');
+    acc = withSeasonWinner(acc, 'me', 'a');
+    acc = withSeasonWinner(acc, 'me', 'me');
+
+    expect(finalizeStats('L', 'me', acc).seasonsWon).toBe(2);
+  });
+
+  it('starts at zero for a player with no stats', () => {
+    expect(emptyPlayerLeagueStats('L', 'me').seasonsWon).toBe(0);
   });
 });
