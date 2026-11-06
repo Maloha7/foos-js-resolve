@@ -489,6 +489,15 @@ const TIERS = [
 
 const tierFor = (seasonsWon) => TIERS.find((tier) => seasonsWon >= tier.minWins);
 
+const rankRequirements = TIERS.map((tier) => tier.minWins);
+
+const currentRankFor = (seasonsWon) => tierFor(seasonsWon)?.minWins;
+
+const winsToNextRank = (seasonsWon) => {
+  const next = [...rankRequirements].reverse().find((minWins) => minWins > seasonsWon);
+  return next === undefined ? null : next - seasonsWon;
+};
+
 const SeasonWinsBadge = ({ seasonsWon, size = 48 }) => {
   const tier = tierFor(seasonsWon);
   if (!tier) return null;
@@ -507,4 +516,4 @@ const SeasonWinsBadge = ({ seasonsWon, size = 48 }) => {
   );
 };
 
-export { SeasonWinsBadge };
+export { SeasonWinsBadge, rankRequirements, currentRankFor, winsToNextRank };

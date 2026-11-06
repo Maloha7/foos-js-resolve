@@ -789,6 +789,52 @@
   }
 }
 
+.stat-cell {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid transparent;
+}
+
+.stat-value-beside-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 68px;
+}
+
+.season-wins-toggle {
+  color: inherit;
+  font: inherit;
+  background: none;
+  border-radius: 0.5rem;
+  transition:
+    border-color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out;
+}
+
+.season-wins-toggle:focus {
+  outline: none;
+}
+
+.season-wins-toggle[aria-expanded='false']:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.season-wins-toggle[aria-expanded='true'] {
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.season-wins-toggle:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+.season-wins-badge-frame {
+  display: inline-block;
+  padding: 14px 10px 6px;
+  line-height: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .season-badge-glow-dragon,
   .season-badge-glow-hellfire,
