@@ -13,7 +13,7 @@ import ConfirmButton from './ConfirmButton';
  * side sizes are taken from the match being corrected (1v1 stays 1v1, 2v2 stays
  * 2v2). The live `SeasonRanks` socket push refreshes the scoreboard on success.
  */
-const MatchCorrection = ({ season, match, onDone, onCancel }) => {
+const MatchCorrection = ({ season, match, rankedPlayerIds, onDone, onCancel }) => {
   const [winners, setWinners] = useState(match.winners);
   const [losers, setLosers] = useState(match.losers);
   const [reason, setReason] = useState('');
@@ -74,6 +74,7 @@ const MatchCorrection = ({ season, match, onDone, onCancel }) => {
         <Form.Group key={`w-${idx}-${playerId}`}>
           <PlayerSelect
             player={playerId}
+            rankedPlayerIds={rankedPlayerIds}
             onSelected={setWinnerAt(idx)}
             unselectedText="Winner"
             variant="success"
@@ -86,6 +87,7 @@ const MatchCorrection = ({ season, match, onDone, onCancel }) => {
         <Form.Group key={`l-${idx}-${playerId}`}>
           <PlayerSelect
             player={playerId}
+            rankedPlayerIds={rankedPlayerIds}
             onSelected={setLoserAt(idx)}
             unselectedText="Loser"
             variant="warning"

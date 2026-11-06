@@ -48,10 +48,16 @@ export type PlayerEmailChanged = Event<
   { newEmail: string }
 >;
 
+export type PlayerAvatarChanged = Event<
+  'PLAYER_AVATAR_CHANGED',
+  { avatar: string }
+>;
+
 export type PlayerEvent =
   | PlayerCreated
   | PlayerDeleted
   | PlayerWonMatch
   | PlayerLostMatch
   | PlayerSetDefaultLeague
-  | PlayerEmailChanged;
+  | PlayerEmailChanged
+  | PlayerAvatarChanged;
