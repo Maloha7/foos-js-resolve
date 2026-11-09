@@ -789,6 +789,20 @@
   }
 }
 
+@keyframes season-flame-rise {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.95;
+  }
+  to {
+    transform: translateY(-14px) scale(0.3, 0.5);
+    opacity: 0;
+  }
+}
+
 .stat-cell {
   padding: 0.25rem 0.75rem;
   border: 1px solid transparent;
@@ -854,10 +868,14 @@
   }
 
   .season-badge-ray-burst,
-  .season-badge-bolt,
-  .season-flame-rise {
+  .season-badge-bolt {
     animation: none;
     opacity: 0.6;
+  }
+
+  .season-badge-ray-burst-late,
+  .season-flame-rise {
+    display: none;
   }
 
   .season-dragon-shockwave,
