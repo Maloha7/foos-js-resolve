@@ -14,6 +14,7 @@ import {
   initialStatsAccumulator,
   rankingOptionsFromEnv,
   withSeasonFinalRank,
+  withSeasonWinner,
   type PlayerLeagueStats,
   type StatsAccumulator,
 } from './league-stats';
@@ -41,7 +42,7 @@ export class LeagueStatsService {
     leagueId: string,
     playerId: string,
   ): Promise<PlayerLeagueStats> {
-    const { seasons } = await this.leagues.getState(leagueId);
+    const { seasons, currentSeason } = await this.leagues.getState(leagueId);
 
     let acc: StatsAccumulator = initialStatsAccumulator();
 
@@ -60,6 +61,9 @@ export class LeagueStatsService {
         acc,
         ranks.ranks.find((r) => r.id === playerId)?.rank,
       );
+      if (seasonId !== currentSeason) {
+        acc = withSeasonWinner(acc, playerId, ranks.ranks[0]?.id);
+      }
 
       for (const event of effective) {
         if (event.type === 'SEASON_MATCH_REGISTERED') {

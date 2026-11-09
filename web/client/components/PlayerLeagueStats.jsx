@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PlayerName } from './PlayerName';
+import { SeasonWinsBadge } from './SeasonWinsBadge';
+import { RankLadder } from './RankLadder';
 import { fetchPlayerLeagueStats } from '../api/endpoints';
 
 // Career card surfaces only the worst offenders; the API returns all of them.
@@ -9,11 +11,32 @@ const MAX_NEMESES = 5;
 const formatRatio = ({ won, lost }) =>
   lost === 0 ? '∞' : (won / lost).toFixed(2);
 
-const Stat = ({ label, value }) => (
-  <div className="text-center px-2">
-    <div className="display-6">{value}</div>
+const Stat = ({ label, value, besideBadge }) => (
+  <div className="stat-cell text-center">
+    <div className={`display-6 ${besideBadge ? 'stat-value-beside-badge' : ''}`}>{value}</div>
     <small className="text-muted">{label}</small>
   </div>
+);
+
+const RANK_LADDER_ID = 'season-rank-ladder';
+
+const SeasonsWonStat = ({ seasonsWon, ranksOpen, onToggleRanks }) => (
+  <button
+    type="button"
+    className="stat-cell season-wins-toggle text-center"
+    aria-expanded={ranksOpen}
+    aria-controls={RANK_LADDER_ID}
+    title="Show all ranks"
+    onClick={onToggleRanks}
+  >
+    <div className="stat-value-beside-badge gap-2">
+      <span className="season-wins-badge-frame">
+        <SeasonWinsBadge seasonsWon={seasonsWon} />
+      </span>
+      <span className="display-6">{seasonsWon}</span>
+    </div>
+    <small className="text-muted">Seasons won</small>
+  </button>
 );
 
 const TeammateLine = ({ label, teammate }) => {
@@ -38,6 +61,7 @@ const TeammateLine = ({ label, teammate }) => {
 const PlayerLeagueStats = ({ leagueId, playerId }) => {
   const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
+  const [ranksOpen, setRanksOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -83,9 +107,20 @@ const PlayerLeagueStats = ({ leagueId, playerId }) => {
       </div>
 
       <div className="d-flex justify-content-around bg-light bg-opacity-10 rounded p-2 mb-3">
-        <Stat label="High score" value={stats.highScore ?? '—'} />
-        <Stat label="Low score" value={stats.lowScore ?? '—'} />
+        <Stat label="High score" value={stats.highScore ?? '—'} besideBadge />
+        <Stat label="Low score" value={stats.lowScore ?? '—'} besideBadge />
+        <SeasonsWonStat
+          seasonsWon={stats.seasonsWon ?? 0}
+          ranksOpen={ranksOpen}
+          onToggleRanks={() => setRanksOpen(!ranksOpen)}
+        />
       </div>
+
+      {ranksOpen ? (
+        <div id={RANK_LADDER_ID} className="bg-light bg-opacity-10 rounded p-2 mb-3">
+          <RankLadder seasonsWon={stats.seasonsWon ?? 0} />
+        </div>
+      ) : null}
 
       {(stats.bestTeammate || stats.worstTeammate) && (
         <div className="mb-3">

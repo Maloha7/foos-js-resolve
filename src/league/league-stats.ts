@@ -39,6 +39,7 @@ export interface PlayerLeagueStats {
   highScore: number | null;
   /** Lowest season-final rank reached in any season; null if never played. */
   lowScore: number | null;
+  seasonsWon: number;
   /** Partner with the most shared wins; null in singles-only play. */
   bestTeammate: TeammateStat | null;
   /** Partner with the most shared losses; null in singles-only play. */
@@ -60,6 +61,7 @@ export interface StatsAccumulator {
   opponents: Record<string, HeadToHead>;
   /** One entry per season the player actually appeared in. */
   seasonFinalRanks: number[];
+  seasonsWon: number;
 }
 
 const emptyAccumulator = (): StatsAccumulator => ({
@@ -69,6 +71,7 @@ const emptyAccumulator = (): StatsAccumulator => ({
   teammates: {},
   opponents: {},
   seasonFinalRanks: [],
+  seasonsWon: 0,
 });
 
 export const emptyPlayerLeagueStats = (
@@ -82,6 +85,7 @@ export const emptyPlayerLeagueStats = (
   lost: 0,
   highScore: null,
   lowScore: null,
+  seasonsWon: 0,
   bestTeammate: null,
   worstTeammate: null,
   nemeses: [],
@@ -153,6 +157,13 @@ export const withSeasonFinalRank = (
   rank === undefined
     ? acc
     : { ...acc, seasonFinalRanks: [...acc.seasonFinalRanks, rank] };
+
+export const withSeasonWinner = (
+  acc: StatsAccumulator,
+  playerId: string,
+  winnerId: string | undefined,
+): StatsAccumulator =>
+  winnerId === playerId ? { ...acc, seasonsWon: acc.seasonsWon + 1 } : acc;
 
 export const initialStatsAccumulator = emptyAccumulator;
 
@@ -254,6 +265,7 @@ export const finalizeStats = (
     lost: acc.lost,
     highScore: ranks.length ? Math.max(...ranks) : null,
     lowScore: ranks.length ? Math.min(...ranks) : null,
+    seasonsWon: acc.seasonsWon,
     // Rank by the smoothed ratio among pairings that clear the match-count
     // gate; the records themselves carry the true counts so the UI shows real
     // W/L.
